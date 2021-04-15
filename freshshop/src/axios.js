@@ -7,7 +7,7 @@ const myAxios = axios.create({
 // 学到了 不能修改config 并且返回的不能是其他的对象 只能是config的扩展 否则报错的
 // appKey不同人登录是不同的 所以我们要动态的设置而不是绑死
 myAxios.interceptors.request.use((config) => {
-  console.log(config.url.includes('passport'));
+  // console.log(JSON.parse(store.state.userInfo).appkey);
   if (config.url.includes('/passport')) {
     return config;
   }
@@ -15,7 +15,7 @@ myAxios.interceptors.request.use((config) => {
     ...config,
     params: {
       ...config.params,
-      appKey: JSON.parse(store.state.userInfo.appKey),
+      appkey: JSON.parse(store.state.userInfo).appkey,
     },
   };
 }, (err) => Promise.reject(err));

@@ -80,8 +80,9 @@ export default {
           user.userLogin(this.forData).then((res) => {
             this.$store.dispatch('changeUserInfoAction', JSON.stringify(res)).then(() => {
               // 跳转页面
-              this.$router.push({ name: 'Index' });
+              this.$router.go({ name: 'Index' });
               cookie.set('userInfo', res);
+              // console.log(cookie.get('userInfo'));
               this.$message.success('登录成功');
             });
           }, (error) => {
