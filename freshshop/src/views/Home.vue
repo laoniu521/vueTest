@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <div class="menu">
-      <Menu :collapsed="collapsed"></Menu>
+      <Menu :collapsed="collapsed" :key="curTime"></Menu>
     </div>
     <div :class="{ content: true, menuUnFold: collapsed }">
       <!-- 头部固定部分 -->
@@ -47,10 +47,11 @@ export default {
     return {
       // 标记收缩状态 利用这个标记实现右侧随之收缩
       collapsed: false,
+      curTime: new Date().getTime(),
     };
   },
   created() {
-    // console.log(this.$router);
+    console.log(this.$store.state.userInfo);
   },
   methods: {
     toggleCollapsed() {
@@ -66,6 +67,13 @@ export default {
   },
   components: {
     Menu,
+  },
+  watch: {
+    $route() {
+      // 对路由变化作出响应... 使左侧的菜单跟随路由动态变化
+      // .log(to, from);
+      this.curTime = new Date().getTime();
+    },
   },
 };
 </script>

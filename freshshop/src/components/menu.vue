@@ -1,6 +1,6 @@
 <template>
   <a-menu
-    :default-selected-keys="[$router.currentRoute.matched[1].meta.id]"
+    :default-selected-keys="[$router.currentRoute.matched[1].meta.title]"
     :default-open-keys="[$router.currentRoute.matched[0].meta.title]"
     mode="inline"
     theme="dark"
@@ -15,11 +15,16 @@
       >
       <template v-if="mainTitle.children">
         <a-menu-item
-          :key="suTitle.meta.id"
+          :key="suTitle.meta.title"
           v-for="suTitle in mainTitle.children"
         >
-          <a-icon :type="suTitle.meta.icon" />
-          <router-link tag="span" :to="{ name: suTitle.name }">
+          <router-link
+            tag="div"
+            :to="{ name: suTitle.name }"
+            style="width: 100%"
+          >
+            <a-icon :type="suTitle.meta.icon" />
+
             {{ suTitle.meta.title }}
           </router-link>
         </a-menu-item>

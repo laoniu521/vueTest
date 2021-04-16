@@ -47,17 +47,17 @@
             <a-button
               type="primary"
               :disabled="editingKey !== ''"
-              @click="() => edit(record.key, record)"
+              @click="() => edit(record.key)"
             >
-              Edit
+              编辑
             </a-button>
           </span>
           <span style="margin-left: 10px">
             <a-button
               type="danger"
               :disabled="editingKey !== ''"
-              @click="() => handleDelete(record.key, record)"
-              >Delete</a-button
+              @click="() => handleDelete(record.key)"
+              >删除</a-button
             >
           </span>
         </div>
@@ -146,41 +146,24 @@ export default {
     };
   },
   created() {
-    // 获取所有的类别
-    production.getCategoryLists().then((res) => {
-      this.categoryLists = res.data;
-      // 获取列表数据
-      production.getProductionLists().then((res2) => {
-        this.data = res2.data.map((ele) => {
-          // console.log(ele, this.categoryLists);
-          if (ele.status === 1) {
-            return {
-              ...ele,
-              key: ele.id,
-              status: '上架',
-              category: this.categoryLists[ele.category].name,
-            };
-          }
-          return {
-            ...ele,
-            key: ele.id,
-            status: '下架',
-          };
-        });
-        this.allData = [...this.data];
-      });
-    });
+    this.getData();
   },
   methods: {
     // 点击编辑按钮
-    edit(key, record) {
-      console.log(key);
-      console.log(record);
-      this.$router.push({ name: 'ProductionEdit' });
+    edit(key) {
+      this.$router.push(`/production/productionEdit/${key}`);
     },
     // 点击删除按钮
-    handleDelete(key, record) {
-      console.log(key, record);
+    handleDelete(key) {
+      production.productionRemove(key).then((res) => {
+        // console.log(res);
+        if (res.data.ok) {
+          this.$message.success('删除成功');
+          this.getData();
+        } else {
+          this.$message.error('删除失败,请重试！');
+        }
+      });
     },
     // 输入搜索内容
     onInput(e) {
@@ -193,11 +176,34 @@ export default {
     // 确认搜索
     handleClick() {
       this.data = [...this.allData];
-      this.data = this.data.filter((ele) => {
-        console.log(this.categoryLists, ele.category, this.category);
-        return ele.category === this.category;
+      this.data = this.data.filter((ele) => ele.category === this.category);
+      // console.log(this.data);
+    },
+    getData() {
+      // 获取所有的类别
+      production.getCategoryLists().then((res) => {
+        this.categoryLists = res.data;
+        // 获取列表数据
+        production.getProductionLists().then((res2) => {
+          this.data = res2.data.map((ele) => {
+            // console.log(ele, this.categoryLists);
+            if (ele.status === 1) {
+              return {
+                ...ele,
+                key: ele.id,
+                status: '上架',
+                category: this.categoryLists[ele.category].name,
+              };
+            }
+            return {
+              ...ele,
+              key: ele.id,
+              status: '下架',
+            };
+          });
+          this.allData = [...this.data];
+        });
       });
-      console.log(this.data);
     },
   },
 };

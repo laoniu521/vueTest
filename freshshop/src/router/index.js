@@ -36,7 +36,7 @@ const asyncRoute = {
     },
     component: () => import('../views/pages/ProductionAdd.vue'),
   }, {
-    path: 'productionEdit',
+    path: 'productionEdit/:id',
     name: 'ProductionEdit',
     meta: {
       title: '商品编辑',
@@ -44,7 +44,7 @@ const asyncRoute = {
       id: 3,
       icon: 'edit',
     },
-    component: () => import('../views/pages/ProductionEdit.vue'),
+    component: () => import('../views/pages/ProductionAdd.vue'),
   }, {
     path: 'categoryAdd',
     name: 'CategoryAdd',
@@ -100,6 +100,13 @@ const routes = [{
     hidden: true,
   },
   component: () => import('../views/Register.vue'),
+}, {
+  path: '/notFount',
+  name: 'NotFount',
+  meta: {
+    hidden: true,
+  },
+  component: () => import('../views/NotFount.vue'),
 },
 
 ];
@@ -111,6 +118,9 @@ const router = new VueRouter({
 });
 let isAddRoutes = false;
 router.beforeEach((to, from, next) => {
+  if (to.matched.length === 0) {
+    return next('/notFount');
+  }
   if (to.path === '/login') {
     if (store.state.userInfo) {
       // router.options.routes[3].children.push(...asyncComponent[role]);
@@ -136,6 +146,9 @@ router.beforeEach((to, from, next) => {
       });
       isAddRoutes = true;
     }
+    return next();
+  }
+  if (to.path === '/register') {
     return next();
   }
   return next('/login');
